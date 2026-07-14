@@ -3,6 +3,8 @@
 A Blender add-on that recreates the MaterialX `colorcorrect` compound node as a
 shader Node Group, built entirely from Blender's built-in shader nodes.
 
+![Color Correct (MaterialX) node](images/node.png)
+
 Useful when authoring materials in Blender that need to match a look developed
 in MaterialX-based pipelines (Houdini/Solaris, Karma, etc.), where
 `colorcorrect` is a common grading node that has no direct Blender equivalent.
@@ -36,6 +38,8 @@ In the Shader Editor:
 ```
 Add > Group > Color Correct (MaterialX)
 ```
+
+![Add menu location](images/add_menu.png)
 
 The node processes colors in scene-linear space, in the same order as the
 MaterialX definition:
