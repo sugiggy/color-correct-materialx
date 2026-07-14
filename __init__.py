@@ -381,6 +381,12 @@ class NODE_OT_add_materialx_colorcorrect(bpy.types.Operator):
 
 
 def _menu_draw(self: "bpy.types.Menu", context: "bpy.types.Context") -> None:
+    # Once the group exists in the file, Blender's built-in group listing in
+    # this same menu already offers it by name; showing our operator entry as
+    # well would look like a duplicate, so skip it.
+    for group in bpy.data.node_groups:
+        if group.get(GROUP_MARKER):
+            return
     self.layout.operator(
         NODE_OT_add_materialx_colorcorrect.bl_idname,
         text="Color Correct (MaterialX)",
