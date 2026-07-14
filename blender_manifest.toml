@@ -1,0 +1,18 @@
+schema_version = "1.0.0"
+
+id = "color_correct_materialx"
+version = "1.0.0"
+name = "Color Correct (MaterialX)"
+tagline = "Shader node group recreating the MaterialX colorcorrect node"
+maintainer = "HoudiniCat <houdinicat0520@gmail.com>"
+type = "add-on"
+
+website = "https://github.com/sugiggy/color-correct-materialx"
+
+tags = ["Node", "Material"]
+
+blender_version_min = "4.2.0"
+
+license = [
+  "SPDX:GPL-2.0-or-later",
+]
