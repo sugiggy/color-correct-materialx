@@ -21,9 +21,11 @@ The node group exposes the same inputs as the MaterialX node:
     In, Hue, Saturation, Gamma, Lift, Gain, Contrast, Contrast Pivot, Exposure
 
 Implementation notes:
-    A single shared Node Group (named "MTLX ColorCorrect") is created on first
-    use and reused afterwards, so adding the node to many materials does not
-    duplicate the ~30 internal nodes each time.
+    A single shared Node Group (named "Color Correct (MaterialX)") is created
+    on first use and reused afterwards, so adding the node to many materials
+    does not duplicate the ~30 internal nodes each time. The group is
+    identified by a custom property marker rather than by name, so it never
+    collides with same-named groups created by other tools.
 """
 
 from __future__ import annotations
@@ -36,7 +38,13 @@ import bpy
 # Name of the shared node group datablock. Kept stable so repeated use (and
 # other tools that build the same group) reuse one definition instead of
 # accumulating duplicates.
-GROUP_NAME = "MTLX ColorCorrect"
+GROUP_NAME = "Color Correct (MaterialX)"
+
+# Marker custom property identifying groups created by this add-on. Groups
+# are looked up by this marker rather than by name, so a node group that some
+# other tool (e.g. a future official MaterialX integration) happens to create
+# with the same name is never mistaken for ours, and vice versa.
+GROUP_MARKER = "color_correct_materialx"
 
 # Interface definition: (MaterialX input name, UI label, socket type)
 INPUT_SOCKETS: tuple[tuple[str, str, str], ...] = (
@@ -274,24 +282,29 @@ def get_colorcorrect_group() -> "bpy.types.NodeTree":
     """Return the shared colorcorrect Node Group, building it if missing.
 
     A single shared definition keeps materials light: without it, every use
-    would expand ~20 nodes into the material's node tree.
+    would expand ~30 nodes into the material's node tree.
+
+    The group is identified by the GROUP_MARKER custom property, not by its
+    name, so node groups created by other tools under the same name are left
+    alone (Blender will suffix ours with ".001" in that case, which is fine).
 
     An existing group is returned untouched. Rebuilding the interface/nodes
     of a group that other materials already reference would regenerate the
     input sockets of their ShaderNodeGroup instances and silently disconnect
     all of their external links (observed in practice with two or more
     materials sharing the group). To pick up changes to the recipe after an
-    update, delete the "MTLX ColorCorrect" node group manually and re-add
-    the node.
+    update, delete the "Color Correct (MaterialX)" node group manually and
+    re-add the node.
 
     Returns:
-        The NodeTree named "MTLX ColorCorrect" (for use in a ShaderNodeGroup).
+        The shared NodeTree (for use in a ShaderNodeGroup).
     """
-    existing = bpy.data.node_groups.get(GROUP_NAME)
-    if existing is not None:
-        return existing
+    for existing in bpy.data.node_groups:
+        if existing.get(GROUP_MARKER):
+            return existing
 
     group = bpy.data.node_groups.new(GROUP_NAME, "ShaderNodeTree")
+    group[GROUP_MARKER] = True
     for _key, label, socket_type in INPUT_SOCKETS:
         group.interface.new_socket(name=label, in_out="INPUT", socket_type=socket_type)
     group.interface.new_socket(name="Color", in_out="OUTPUT", socket_type="NodeSocketColor")
