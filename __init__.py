@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: GPL-2.0-or-later
+# SPDX-License-Identifier: GPL-3.0-or-later
 """Color Correct (MaterialX) — a Blender add-on (extension).
 
 Recreates the MaterialX ``colorcorrect`` compound node (``NG_colorcorrect_color3``
