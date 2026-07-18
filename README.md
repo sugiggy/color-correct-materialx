@@ -25,8 +25,7 @@ in MaterialX-based pipelines (Houdini/Solaris, Karma, etc.), where
 
 ## Installation
 
-Install from [extensions.blender.org](https://extensions.blender.org/), or
-download the release zip and use
+Download the release zip and use
 `Edit > Preferences > Get Extensions > Install from Disk...`.
 
 Requires Blender 4.2 or later.
