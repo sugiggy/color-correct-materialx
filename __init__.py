@@ -46,17 +46,24 @@ GROUP_NAME = "Color Correct (MaterialX)"
 # with the same name is never mistaken for ours, and vice versa.
 GROUP_MARKER = "color_correct_materialx"
 
-# Interface definition: (MaterialX input name, UI label, socket type)
-INPUT_SOCKETS: tuple[tuple[str, str, str], ...] = (
-    ("in", "In", "NodeSocketColor"),
-    ("hue", "Hue", "NodeSocketFloat"),
-    ("saturation", "Saturation", "NodeSocketFloat"),
-    ("gamma", "Gamma", "NodeSocketFloat"),
-    ("lift", "Lift", "NodeSocketFloat"),
-    ("gain", "Gain", "NodeSocketFloat"),
-    ("contrast", "Contrast", "NodeSocketFloat"),
-    ("contrastpivot", "Contrast Pivot", "NodeSocketFloat"),
-    ("exposure", "Exposure", "NodeSocketFloat"),
+# Interface definition: (MaterialX input name, UI label, socket type, default value).
+# Defaults match the MaterialX ND_colorcorrect_color3 node definition (verified
+# against Houdini's Sdr registry: in=(1,1,1), hue=0, saturation=1, gamma=1,
+# lift=0, gain=1, contrast=1, contrastpivot=0.5, exposure=0 — an identity
+# transform). Without explicit defaults, Blender's socket creation defaults
+# everything to 0.0, which makes a freshly-added node produce a broken result
+# (gamma=0 causes a divide-by-zero in the 1/gamma term; gain=0 and contrast=0
+# both flatten the output) instead of passing the input through unchanged.
+INPUT_SOCKETS: tuple[tuple[str, str, str, Any], ...] = (
+    ("in", "In", "NodeSocketColor", (1.0, 1.0, 1.0, 1.0)),
+    ("hue", "Hue", "NodeSocketFloat", 0.0),
+    ("saturation", "Saturation", "NodeSocketFloat", 1.0),
+    ("gamma", "Gamma", "NodeSocketFloat", 1.0),
+    ("lift", "Lift", "NodeSocketFloat", 0.0),
+    ("gain", "Gain", "NodeSocketFloat", 1.0),
+    ("contrast", "Contrast", "NodeSocketFloat", 1.0),
+    ("contrastpivot", "Contrast Pivot", "NodeSocketFloat", 0.5),
+    ("exposure", "Exposure", "NodeSocketFloat", 0.0),
 )
 
 # Default luminance coefficients used by MaterialX (ACEScg primaries).
@@ -305,8 +312,11 @@ def get_colorcorrect_group() -> "bpy.types.NodeTree":
 
     group = bpy.data.node_groups.new(GROUP_NAME, "ShaderNodeTree")
     group[GROUP_MARKER] = True
-    for _key, label, socket_type in INPUT_SOCKETS:
-        group.interface.new_socket(name=label, in_out="INPUT", socket_type=socket_type)
+    for _key, label, socket_type, default in INPUT_SOCKETS:
+        socket = group.interface.new_socket(
+            name=label, in_out="INPUT", socket_type=socket_type
+        )
+        socket.default_value = default
     group.interface.new_socket(name="Color", in_out="OUTPUT", socket_type="NodeSocketColor")
 
     cursor = {"y": 400.0}

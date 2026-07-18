@@ -1,7 +1,7 @@
 schema_version = "1.0.0"
 
 id = "color_correct_materialx"
-version = "1.0.0"
+version = "1.0.1"
 name = "Color Correct (MaterialX)"
 tagline = "Shader node group recreating the MaterialX colorcorrect node"
 maintainer = "HoudiniCat <houdinicat0520@gmail.com>"
