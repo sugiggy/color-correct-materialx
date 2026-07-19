@@ -1,8 +1,3 @@
-# extensions.blender.org 提出用の説明文ドラフト
-#
-# アップロードフォームの Description 欄にコピペしてください（Markdown対応）。
-# ---
-
 Recreates the MaterialX `colorcorrect` compound node as a shader Node Group,
 built entirely from Blender's built-in shader nodes (Math, Vector Math, Mix,
 Separate/Combine Color).
