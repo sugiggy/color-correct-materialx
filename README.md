@@ -28,9 +28,7 @@ in MaterialX-based pipelines (Houdini/Solaris, Karma, etc.), where
 Requires Blender 4.2 or later (this add-on is packaged as a Blender
 Extension).
 
-1. Download the latest release zip (`color_correct_materialx-*.zip`) from
-   this repository's [Releases page](https://github.com/sugiggy/color-correct-materialx/releases),
-   or grab the zip committed at the repo root.
+1. Download the latest release zip (`color_correct_materialx-*.zip`) 
 2. In Blender, open `Edit > Preferences...` and go to the `Get Extensions`
    tab.
 3. Click the dropdown arrow (▼) in the top-right corner of that tab and
